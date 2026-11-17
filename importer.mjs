@@ -1,5 +1,6 @@
 // Watches a "new" folder, imports CSVs into Actual Budget, files them away,
 // and sends a push notification via ntfy when transactions are ready to review.
+import "dotenv/config";
 import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
@@ -100,8 +101,8 @@ function csvToTransactions(content, cfg) {
       : parseAmount(r[col.credit]) - Math.abs(parseAmount(r[col.debit]));
     if (cfg.invertAmount) amount = -amount;
 
-    const payee = col.payee ? r[col.payee] : undefined;
-    const notes = col.notes ? r[col.notes] : undefined;
+    const payee = r[col.payee] || undefined;
+    const notes = r[col.notes] || undefined;
 
     // Stable ID so re-importing the same file never creates duplicates.
     // The counter keeps two identical same-day transactions distinct.

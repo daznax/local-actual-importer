@@ -12,6 +12,7 @@
   "dependencies": {
     "@actual-app/api": "latest",
     "chokidar": "^4.0.0",
-    "csv-parse": "^7.0.3"
+    "csv-parse": "^7.0.3",
+    "dotenv": "^18.0.10"
   }
 }
