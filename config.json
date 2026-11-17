@@ -1,0 +1,24 @@
+{
+  "dateFormat": "MM/DD/YYYY",
+  "accounts": [
+    {
+      "id": "1",
+      "name": "BMO",
+      "columns": { "date": "POSTED DATE", "payee": "DESCRIPTION", "amount": "AMOUNT" },
+      "invertAmount": false
+    },
+    {
+      "id": "2",
+      "name": "Chase",
+      "columns": {
+        "date": "Transaction Date",
+        "payee": "Description",
+        "notes": "Memo",
+        "amount": "Amount",
+        "type": "Type"
+      },
+      "invertAmount": false
+    }
+  ],
+  "skipImport": true
+}
