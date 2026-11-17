@@ -153,9 +153,9 @@ async function importToActual(accountName, transactions) {
     const accounts = await api.getAccounts();
     const account = accounts.find((a) => a.name.toLowerCase() === accountName.toLowerCase());
     if (!account) {
-      throw new Error(
-        `Account "${accountName}" not found. Available: ${accounts.map((a) => a.name).join(", ")}`,
-      );
+      let errorMsg = `Account "${accountName}" not found. Available: ${accounts.map((a) => a.name).join(", ")}`;
+      log(errorMsg);
+      throw new Error(errorMsg);
     }
     const result = await api.importTransactions(account.id, transactions);
     await api.sync();
