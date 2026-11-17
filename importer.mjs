@@ -205,7 +205,7 @@ async function processFileCore(path, name) {
     if (transactions.length === 0) throw new Error("No transactions found in file");
 
     if (!skipImport) {
-      const result = await importToActual(account.name, transactions);
+      const result = await importToActual(account.actualName, transactions);
       const added = result.added?.length ?? 0;
       const updated = result.updated?.length ?? 0;
       if (result.errors?.length) {
@@ -215,7 +215,7 @@ async function processFileCore(path, name) {
       log(`Imported ${name}: ${added} added, ${updated} updated`);
       await notify(
         "Transactions ready to review",
-        `${name} -> ${account.name}: ${added} new, ${updated} updated`,
+        `${name} -> ${account.actualName}: ${added} new, ${updated} updated`,
       );
     } else {
       //if we're skipping the import, write the transactions to the console

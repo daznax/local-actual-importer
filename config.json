@@ -3,13 +3,15 @@
   "accounts": [
     {
       "id": "1",
-      "name": "BMO Bank",
+      "name": "BMO",
+      "actualName": "BMO Bank",
       "columns": { "date": "POSTED DATE", "payee": "DESCRIPTION", "amount": "AMOUNT" },
       "invertAmount": false
     },
     {
       "id": "2",
-      "name": "Chase Credit - Combined",
+      "name": "chase",
+      "actualName": "Chase Credit - Combined",
       "columns": {
         "date": "Transaction Date",
         "payee": "Description",
