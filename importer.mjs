@@ -247,6 +247,8 @@ for (const d of Object.values(DIRS)) await fs.mkdir(d, { recursive: true });
 const watcher = chokidar.watch(DIRS.shared, {
   depth: 0,
   ignoreInitial: false, // also picks up files that arrived while the service was down
+  usePolling: true,
+  interval: 500,
   awaitWriteFinish: { stabilityThreshold: 2000, pollInterval: 500 }, // wait for slow copies over Samba
 });
 
