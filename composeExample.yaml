@@ -1,0 +1,28 @@
+services:
+  actual-importer:
+    build: .
+    container_name: actual-importer
+    restart: unless-stopped
+    # Run as a user that can read/write the share. Find yours with: id -u && id -g
+    user: "${PUID:-1000}:${PGID:-1000}"
+    env_file: .env
+    environment:
+      # Container paths; these override the host paths in .env
+      SHARED_DIR: /files/new
+      BASE_DIR: /files
+      ACTUAL_DATA_DIR: /data
+    volumes:
+      # Mount the parent folder ONCE. importer.mjs moves files with fs.rename, which fails
+      # with EXDEV if new/ and wip/ are separate bind mounts, even on the same disk.
+      # Share only .../actual-files/new over Samba; wip/complete/failed stay server-only.
+      - ${HOST_FILES_DIR:-/shared/storage/drive/folder}:/files/new
+      - ./data:/data
+      - ./app/config.json:/app/config.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stop_grace_period: 30s # lets an in-progress import finish on shutdown
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
