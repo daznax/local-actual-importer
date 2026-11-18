@@ -44,7 +44,13 @@ async function moveTo(file, dir) {
     const { name, ext } = path.parse(dest);
     dest = path.join(dir, `${name}-${Date.now()}${ext}`);
   }
-  await fs.rename(file, dest); // same filesystem, so this is atomic
+  try {
+    await fs.rename(file, dest); // if same filesystem, this is atomic
+  } catch (err) {
+    if (err.code !== "EXDEV") throw err;
+    await fs.copyFile(file, dest);
+    await fs.unlink(file);
+  }
   return dest;
 }
 
