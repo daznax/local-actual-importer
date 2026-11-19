@@ -18,6 +18,7 @@ const DIRS = {
   failed: path.join(BASE, "failed"),
 };
 const config = JSON.parse(await fs.readFile(new URL("./config.json", import.meta.url), "utf8"));
+const catAry = config.categories;
 const skipImport = config.skipImport;
 
 const log = (...a) => console.log(new Date().toISOString(), ...a);
@@ -66,10 +67,13 @@ async function notify(title, message, priority = "default") {
   }
 }
 
+/**
+ * @param txPayee - the raw payee from the transaction
+ * @returns normalized payee name
+ */
 function normalizePayee(txPayee) {
   let lower = String(txPayee).toLowerCase();
-  if (lower.includes()) {
-  } else if (lower.includes("kwik trip")) {
+  if (lower.includes("kwik trip")) {
     return "Kwik Trip";
   } else if (lower.includes("costco")) {
     if (lower.includes("gas")) {
@@ -162,7 +166,6 @@ function csvToTransactions(content, cfg) {
       ? parseAmount(r[col.amount])
       : parseAmount(r[col.credit]) - Math.abs(parseAmount(r[col.debit]));
     if (cfg.invertAmount) amount = -amount;
-
     const payee = normalizePayee(r[col.payee]) || undefined;
     const notes = r[col.notes] || undefined;
 
@@ -220,7 +223,14 @@ async function importToActual(accountName, transactions) {
       log(errorMsg);
       throw new Error(errorMsg);
     }
-    const result = await api.importTransactions(account.id, transactions);
+    const categories = await api.getCategories();
+    console.log(categories);
+    const result = {};
+    if (skipImport < 1) {
+      result = await api.importTransactions(account.id, transactions);
+    } else {
+      log("Import skipped.");
+    }
     await api.sync();
     return result; // { added: [...], updated: [...], errors?: [...] }
   } finally {
@@ -266,7 +276,11 @@ async function processFileCore(path, name) {
     const transactions = csvToTransactions(content, account);
     if (transactions.length === 0) throw new Error("No transactions found in file");
 
-    if (!skipImport) {
+    // skipImport supports 3 options:
+    // 0 = equivalent of false, import occurs
+    // 1 = connect to api but don't import
+    // 2 = skip api connection entirely
+    if (skipImport < 2) {
       const result = await importToActual(account.actualName, transactions);
       const added = result.added?.length ?? 0;
       const updated = result.updated?.length ?? 0;

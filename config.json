@@ -19,8 +19,8 @@
         "amount": "Amount",
         "type": "Type"
       },
-      "invertAmount": false
+      "invertAmount": true
     }
   ],
-  "skipImport": false
+  "skipImport": 0
 }
