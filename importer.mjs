@@ -225,7 +225,7 @@ async function importToActual(accountName, transactions) {
     }
     const categories = await api.getCategories();
     console.log(categories);
-    const result = {};
+    let result = {};
     if (skipImport < 1) {
       result = await api.importTransactions(account.id, transactions);
     } else {
