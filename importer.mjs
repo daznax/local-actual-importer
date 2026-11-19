@@ -66,6 +66,62 @@ async function notify(title, message, priority = "default") {
   }
 }
 
+function normalizePayee(txPayee) {
+  let lower = String(txPayee).toLowerCase();
+  if (lower.includes()) {
+  } else if (lower.includes("kwik trip")) {
+    return "Kwik Trip";
+  } else if (lower.includes("costco")) {
+    if (lower.includes("gas")) {
+      return "Costco Gas";
+    } else {
+      return "Costco";
+    }
+  } else if (lower.includes("aldi")) {
+    return "Aldi";
+  } else if (lower.includes("amazon")) {
+    return "Amazon";
+  } else if (lower.includes("walgreens")) {
+    return "Walgreens";
+  } else if (lower.includes("culvers")) {
+    return "Culvers";
+  } else if (lower.includes("village of belle") || lower.includes("belleville servi")) {
+    return "Village of Belleville";
+  } else if (lower.includes("little woodland")) {
+    return "LW Preschool";
+  } else if (lower.includes("agrace")) {
+    return "Agrace";
+  } else if (lower.includes("alliant")) {
+    return "Alliant Energy";
+  } else if (lower.includes("hmf")) {
+    return "Hyundai Motor Finance";
+  } else if (lower.includes("vacp")) {
+    return "VA";
+  } else if (lower.includes("spectrum")) {
+    return "Spectrum Internet";
+  } else if (lower.includes("we energies")) {
+    return "We Energies";
+  } else if (lower.includes("discover")) {
+    return "Capital One Credit - Combined";
+  } else if (lower.includes("epic")) {
+    return "Epic Systems";
+  } else if (lower.includes("loancare")) {
+    return "Mortgage Payment";
+  } else if (lower.includes("capital one")) {
+    return "HYSA";
+  } else if (lower.includes("chase credit crd")) {
+    return "Chase Credit - Combined";
+  } else if (lower.includes("wi dir")) {
+    return "529 Contribution";
+  } else if (lower.includes("debt education")) {
+    return "EdFinancial";
+  } else if (lower.includes("target")) {
+    return "Target";
+  } else {
+    return txPayee;
+  }
+}
+
 // ---------- CSV parsing ----------
 
 function parseDate(raw) {
@@ -107,7 +163,7 @@ function csvToTransactions(content, cfg) {
       : parseAmount(r[col.credit]) - Math.abs(parseAmount(r[col.debit]));
     if (cfg.invertAmount) amount = -amount;
 
-    const payee = r[col.payee] || undefined;
+    const payee = normalizePayee(r[col.payee]) || undefined;
     const notes = r[col.notes] || undefined;
 
     // Stable ID so re-importing the same file never creates duplicates.
